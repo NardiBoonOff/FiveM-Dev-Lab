@@ -16,8 +16,8 @@
   </div>
 </div>
 
-<div class="row g-4 mb-4">
-  <div class="col-lg-3 col-md-6">
+<div class="row g-3 mb-3">
+  <div class="col-lg-3 col-md-6 col-sm-6">
     <div class="card p-3">
       <div class="text-muted small">🔴 Status</div>
       {% if server.status == 'running' %}
@@ -27,19 +27,19 @@
       {% endif %}
     </div>
   </div>
-  <div class="col-lg-3 col-md-6">
+  <div class="col-lg-3 col-md-6 col-sm-6">
     <div class="card p-3">
       <div class="text-muted small">📍 Environment</div>
       <div class="fw-bold mt-2" style="color: var(--primary-light);">{{ server.environment }}</div>
     </div>
   </div>
-  <div class="col-lg-3 col-md-6">
+  <div class="col-lg-3 col-md-6 col-sm-6">
     <div class="card p-3">
       <div class="text-muted small">🔌 Port</div>
       <div class="fw-bold mt-2" style="color: var(--primary-light);">{{ server.port }}</div>
     </div>
   </div>
-  <div class="col-lg-3 col-md-6">
+  <div class="col-lg-3 col-md-6 col-sm-6">
     <div class="card p-3">
       <div class="text-muted small">📡 RCON</div>
       <div class="fw-bold mt-2" style="color: var(--primary-light);">{{ server.rcon_port }}</div>
@@ -47,75 +47,242 @@
   </div>
 </div>
 
-<div class="row g-4 mb-4">
-  <div class="col-lg-8">
+<!-- Tabs -->
+<ul class="nav nav-tabs" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link active" id="config-tab" data-bs-toggle="tab" href="#config" role="tab">📝 Configuration</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="console-tab" data-bs-toggle="tab" href="#console" role="tab">💻 Console</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="monitoring-tab" data-bs-toggle="tab" href="#monitoring" role="tab">📊 Monitoring</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="resources-tab" data-bs-toggle="tab" href="#resources" role="tab">📦 Resources</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="files-tab" data-bs-toggle="tab" href="#files" role="tab">📂 Files</a>
+  </li>
+</ul>
+
+<div class="tab-content mt-3">
+  <!-- Configuration Tab -->
+  <div class="tab-pane fade show active" id="config" role="tabpanel">
     <div class="card p-4">
       <h5>📝 server.cfg Editor</h5>
       <form method="post" action="{{ url_for('save_server_config', server_id=server.id) }}">
         <textarea class="form-control" name="content">{{ server.config_text }}</textarea>
         <div class="mt-3 d-flex justify-content-end gap-2">
-          <a href="{{ url_for('servers') }}" class="btn btn-secondary">Cancel</a>
+          <button type="reset" class="btn btn-secondary">Reset</button>
           <button class="btn btn-primary" type="submit">💾 Save Configuration</button>
         </div>
       </form>
     </div>
   </div>
 
-  <div class="col-lg-4">
-    <div class="card p-4 mb-4">
-      <h5>📊 Live Monitoring</h5>
-      <div class="monitored-box">
-        <div class="d-flex justify-content-between mb-2">
-          <span>💻 CPU Usage</span>
-          <strong>{{ server.monitor.cpu_percent }}%</strong>
+  <!-- Console Tab -->
+  <div class="tab-pane fade" id="console" role="tabpanel">
+    <div class="card p-4">
+      <h5>💻 Server Console</h5>
+      <div class="console-output" id="console-output">
+        <div class="log-line log-success">[INFO] Server initialized...</div>
+        <div class="log-line log-info">[BOOT] Loading resources...</div>
+        <div class="log-line log-warning">[WARN] deprecated config option detected</div>
+        <div class="log-line log-success">[READY] Server ready on port {{ server.port }}</div>
+      </div>
+      <div class="console-input">
+        <input type="text" class="form-control" id="command-input" placeholder="Enter command (e.g., restart, stop, ensure resource_name)...">
+        <button class="btn btn-primary" onclick="sendCommand()">▶ Send</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Monitoring Tab -->
+  <div class="tab-pane fade" id="monitoring" role="tabpanel">
+    <div class="row g-3">
+      <div class="col-lg-8">
+        <div class="card p-4">
+          <h5>📊 System Metrics</h5>
+          <div class="monitored-box">
+            <div class="d-flex justify-content-between mb-3">
+              <span>💻 CPU Usage</span>
+              <strong>{{ server.monitor.cpu_percent }}%</strong>
+            </div>
+            <div class="progress mb-3" style="height: 6px;">
+              <div class="progress-bar" style="width: {{ server.monitor.cpu_percent }}%"></div>
+            </div>
+            
+            <div class="d-flex justify-content-between mb-3">
+              <span>💾 Memory</span>
+              <strong>{{ server.monitor.memory_mb }} MB</strong>
+            </div>
+            <div class="progress mb-3" style="height: 6px;">
+              <div class="progress-bar" style="width: {{ [server.monitor.memory_mb, 100] | min }}%"></div>
+            </div>
+            
+            <div class="d-flex justify-content-between mb-3">
+              <span>📀 Disk</span>
+              <strong>{{ server.monitor.disk_usage }}%</strong>
+            </div>
+            <div class="progress mb-3" style="height: 6px;">
+              <div class="progress-bar" style="width: {{ server.monitor.disk_usage }}%"></div>
+            </div>
+
+            <div class="d-flex justify-content-between mb-2">
+              <span>⏱ Uptime</span>
+              <strong>{{ (server.monitor.uptime_seconds // 3600) }}h {{ ((server.monitor.uptime_seconds % 3600) // 60) }}m</strong>
+            </div>
+          </div>
         </div>
-        <div class="progress mb-3" style="height: 6px;">
-          <div class="progress-bar" style="width: {{ server.monitor.cpu_percent }}%"></div>
-        </div>
-        
-        <div class="d-flex justify-content-between mb-2">
-          <span>💾 Memory</span>
-          <strong>{{ server.monitor.memory_mb }} MB</strong>
-        </div>
-        <div class="progress mb-3" style="height: 6px;">
-          <div class="progress-bar" style="width: {{ [server.monitor.memory_mb, 100] | min }}%"></div>
-        </div>
-        
-        <div class="d-flex justify-content-between mb-2">
-          <span>⏱️ Uptime</span>
-          <strong>{{ (server.monitor.uptime_seconds // 3600) }}h {{ ((server.monitor.uptime_seconds % 3600) // 60) }}m</strong>
-        </div>
-        
-        <div class="d-flex justify-content-between">
-          <span>👥 Players</span>
-          <strong>{{ server.monitor.online_players }}</strong>
+      </div>
+      <div class="col-lg-4">
+        <div class="card p-4">
+          <h5>👥 Players & Network</h5>
+          <div class="monitored-box">
+            <div class="d-flex justify-content-between mb-3">
+              <span>👥 Players Online</span>
+              <strong>{{ server.monitor.online_players }}/128</strong>
+            </div>
+            
+            <div class="d-flex justify-content-between mb-3">
+              <span>📡 Ping</span>
+              <strong>{{ server.monitor.ping }}ms</strong>
+            </div>
+            
+            <div class="d-flex justify-content-between mb-2">
+              <span>⬇️ Network In</span>
+              <strong>{{ server.monitor.network_in }}MB</strong>
+            </div>
+            
+            <div class="d-flex justify-content-between">
+              <span>⬆️ Network Out</span>
+              <strong>{{ server.monitor.network_out }}MB</strong>
+            </div>
+          </div>
         </div>
       </div>
     </div>
+  </div>
 
+  <!-- Resources Tab -->
+  <div class="tab-pane fade" id="resources" role="tabpanel">
     <div class="card p-4">
-      <h5>ℹ️ Server Information</h5>
-      <div style="font-size: 0.9rem;">
-        <div class="mb-2">
-          <span class="text-muted">Folder</span>
-          <div class="text-light fw-bold">{{ server.folder }}</div>
-        </div>
-        <div class="mb-2">
-          <span class="text-muted">Template</span>
-          <div class="text-light fw-bold">{{ server.template }}</div>
-        </div>
-        <div class="mb-2">
-          <span class="text-muted">Database</span>
-          <div class="text-light fw-bold">{{ server.mysql_database or 'Default' }}</div>
-        </div>
-        {% if server.notes %}
-        <div class="mb-2 pt-2 border-top border-secondary">
-          <span class="text-muted">Notes</span>
-          <div class="text-light fw-bold mt-1">{{ server.notes }}</div>
-        </div>
-        {% endif %}
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5>📦 Server Resources</h5>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addResourceModal">➕ Add Resource</button>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead>
+            <tr>
+              <th>📦 Name</th>
+              <th>🔴 Status</th>
+              <th>📊 CPU</th>
+              <th>💾 Memory</th>
+              <th>⚙️ Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>esx_core</code></td>
+              <td><span class="status-pill badge-running">● Running</span></td>
+              <td>2.5%</td>
+              <td>45 MB</td>
+              <td class="action-bar">
+                <button class="btn btn-sm btn-warning">⏸ Stop</button>
+                <button class="btn btn-sm btn-danger">🗑 Remove</button>
+              </td>
+            </tr>
+            <tr>
+              <td><code>ox_inventory</code></td>
+              <td><span class="status-pill badge-running">● Running</span></td>
+              <td>1.8%</td>
+              <td>38 MB</td>
+              <td class="action-bar">
+                <button class="btn btn-sm btn-warning">⏸ Stop</button>
+                <button class="btn btn-sm btn-danger">🗑 Remove</button>
+              </td>
+            </tr>
+            <tr>
+              <td><code>qb-core</code></td>
+              <td><span class="status-pill badge-stopped">● Stopped</span></td>
+              <td>0%</td>
+              <td>0 MB</td>
+              <td class="action-bar">
+                <button class="btn btn-sm btn-success">▶ Start</button>
+                <button class="btn btn-sm btn-danger">🗑 Remove</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Files Tab -->
+  <div class="tab-pane fade" id="files" role="tabpanel">
+    <div class="card p-4">
+      <h5>📂 File Explorer</h5>
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead>
+            <tr>
+              <th>📁 Name</th>
+              <th>📄 Type</th>
+              <th>📏 Size</th>
+              <th>🕐 Modified</th>
+              <th>⚙️ Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>resources/</strong></td>
+              <td>Directory</td>
+              <td>-</td>
+              <td>Today</td>
+              <td><button class="btn btn-sm btn-info">📂 Open</button></td>
+            </tr>
+            <tr>
+              <td><strong>server.cfg</strong></td>
+              <td>Config</td>
+              <td>2.5 KB</td>
+              <td>2 hours ago</td>
+              <td><button class="btn btn-sm btn-info">✏️ Edit</button></td>
+            </tr>
+            <tr>
+              <td><strong>database.json</strong></td>
+              <td>Data</td>
+              <td>12 KB</td>
+              <td>1 day ago</td>
+              <td><button class="btn btn-sm btn-info">👁 View</button></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
 </div>
+
+<script>
+function sendCommand() {
+  const input = document.getElementById('command-input');
+  const output = document.getElementById('console-output');
+  const command = input.value.trim();
+  
+  if (!command) return;
+  
+  const line = document.createElement('div');
+  line.className = 'log-line log-info';
+  line.textContent = `> ${command}`;
+  output.appendChild(line);
+  
+  input.value = '';
+  output.scrollTop = output.scrollHeight;
+}
+
+document.getElementById('command-input').addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') sendCommand();
+});
+</script>
 {% endblock %}
