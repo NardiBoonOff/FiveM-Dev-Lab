@@ -5,32 +5,32 @@
 {% block content %}
 <div class="d-flex justify-content-between align-items-center page-header">
   <div>
-    <h2>Dashboard</h2>
-    <p class="text-muted mb-0">Global overview of your local FiveM environments</p>
+    <h2>📊 Dashboard</h2>
+    <p class="text-muted mb-0">Real-time overview of your FiveM environments</p>
   </div>
-  <a href="{{ url_for('servers') }}" class="btn btn-primary">Add server</a>
+  <a href="{{ url_for('servers') }}" class="btn btn-primary">➕ New Server</a>
 </div>
 
 <div class="row g-4 mb-4">
-  <div class="col-md-3">
+  <div class="col-md-3 col-sm-6">
     <div class="card stat-box">
-      <div class="text-muted small">Total servers</div>
+      <div class="text-muted small">Total Servers</div>
       <div class="display-6 fw-bold mt-2">{{ total }}</div>
     </div>
   </div>
-  <div class="col-md-3">
+  <div class="col-md-3 col-sm-6">
     <div class="card stat-box">
       <div class="text-muted small">Running</div>
-      <div class="display-6 fw-bold mt-2 text-success">{{ running }}</div>
+      <div class="display-6 fw-bold mt-2" style="color: #86efac;">{{ running }}</div>
     </div>
   </div>
-  <div class="col-md-3">
+  <div class="col-md-3 col-sm-6">
     <div class="card stat-box">
       <div class="text-muted small">Stopped</div>
-      <div class="display-6 fw-bold mt-2 text-danger">{{ stopped }}</div>
+      <div class="display-6 fw-bold mt-2" style="color: #fca5a5;">{{ stopped }}</div>
     </div>
   </div>
-  <div class="col-md-3">
+  <div class="col-md-3 col-sm-6">
     <div class="card stat-box">
       <div class="text-muted small">Templates</div>
       <div class="display-6 fw-bold mt-2">3</div>
@@ -38,45 +38,51 @@
   </div>
 </div>
 
-<div class="card p-3">
+<div class="card p-0">
   <div class="table-responsive">
-    <table class="table table-dark table-borderless align-middle mb-0">
+    <table class="table table-hover mb-0">
       <thead>
         <tr>
-          <th>Server</th>
-          <th>Environment</th>
-          <th>Template</th>
-          <th>Status</th>
-          <th>CPU</th>
-          <th>RAM</th>
-          <th>Port</th>
-          <th>Actions</th>
+          <th>🎮 Server</th>
+          <th>📍 Environment</th>
+          <th>🏗️ Template</th>
+          <th>🔴 Status</th>
+          <th>💻 CPU</th>
+          <th>💾 RAM</th>
+          <th>🔌 Port</th>
+          <th>⚙️ Actions</th>
         </tr>
       </thead>
       <tbody>
         {% for server in servers %}
           <tr>
-            <td><a href="{{ url_for('server_detail', server_id=server.id) }}" class="text-light fw-bold">{{ server.name }}</a></td>
+            <td>
+              <a href="{{ url_for('server_detail', server_id=server.id) }}" class="text-light fw-bold" style="text-decoration: none; color: var(--primary-light);">{{ server.name }}</a>
+            </td>
             <td><span class="badge bg-secondary">{{ server.environment }}</span></td>
-            <td>{{ server.template }}</td>
+            <td><code>{{ server.template }}</code></td>
             <td>
               {% if server.status == 'running' %}
-                <span class="status-pill badge-running">🟢 Running</span>
+                <span class="status-pill badge-running">● Running</span>
               {% else %}
-                <span class="status-pill badge-stopped">⚫ Stopped</span>
+                <span class="status-pill badge-stopped">● Stopped</span>
               {% endif %}
             </td>
-            <td>{{ server.monitor.cpu_percent }}%</td>
-            <td>{{ server.monitor.memory_mb }} MB</td>
-            <td>{{ server.port }}</td>
+            <td><strong>{{ server.monitor.cpu_percent }}%</strong></td>
+            <td><strong>{{ server.monitor.memory_mb }} MB</strong></td>
+            <td><code>{{ server.port }}</code></td>
             <td class="action-bar">
               <button class="btn btn-sm btn-success" data-server-action="start" data-server-id="{{ server.id }}">▶ Start</button>
               <button class="btn btn-sm btn-warning" data-server-action="stop" data-server-id="{{ server.id }}">⏹ Stop</button>
+              <a href="{{ url_for('server_detail', server_id=server.id) }}" class="btn btn-sm btn-info">⚙ Config</a>
             </td>
           </tr>
         {% else %}
           <tr>
-            <td colspan="8" class="text-center text-muted py-4">No servers yet. <a href="{{ url_for('servers') }}">Create one</a></td>
+            <td colspan="8" class="text-center text-muted py-5">
+              <div>📭 No servers yet</div>
+              <a href="{{ url_for('servers') }}" class="btn btn-primary btn-sm mt-2">Create your first server</a>
+            </td>
           </tr>
         {% endfor %}
       </tbody>

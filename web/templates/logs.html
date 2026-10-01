@@ -5,35 +5,35 @@
 {% block content %}
 <div class="page-header">
   <h2>📋 Activity Logs</h2>
-  <p class="text-muted mb-0">All operations and system events</p>
+  <p class="text-muted mb-0">All system events and operations</p>
 </div>
 
-<div class="card p-3">
+<div class="card p-0">
   <div class="table-responsive">
-    <table class="table table-dark table-borderless mb-0 small">
+    <table class="table table-hover mb-0 small">
       <thead>
         <tr>
-          <th style="width: 180px;">Time</th>
-          <th style="width: 120px;">Server</th>
-          <th style="width: 100px;">Action</th>
-          <th style="width: 60px;">Level</th>
-          <th style="width: 80px;">User</th>
-          <th>Details</th>
+          <th style="width: 200px;">🕐 Time</th>
+          <th style="width: 120px;">🎮 Server</th>
+          <th style="width: 120px;">📌 Action</th>
+          <th style="width: 80px;">🏷️ Level</th>
+          <th style="width: 100px;">👤 User</th>
+          <th>📝 Details</th>
         </tr>
       </thead>
       <tbody>
         {% for entry in entries %}
           <tr>
-            <td>{{ entry.created_at }}</td>
+            <td><code>{{ entry.created_at }}</code></td>
             <td>{{ entry.server_name or '—' }}</td>
-            <td>{{ entry.action }}</td>
+            <td><code>{{ entry.action }}</code></td>
             <td>
               {% if entry.level == 'error' %}
-                <span class="badge bg-danger">error</span>
+                <span class="badge" style="background: rgba(239, 68, 68, 0.25); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.3);">❌ error</span>
               {% elif entry.level == 'warning' %}
-                <span class="badge bg-warning">warning</span>
+                <span class="badge" style="background: rgba(245, 158, 11, 0.25); color: #fcd34d; border: 1px solid rgba(245, 158, 11, 0.3);">⚠️ warning</span>
               {% else %}
-                <span class="badge bg-info">info</span>
+                <span class="badge" style="background: rgba(59, 130, 246, 0.25); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.3);">ℹ️ info</span>
               {% endif %}
             </td>
             <td>{{ entry.user }}</td>
@@ -41,7 +41,7 @@
           </tr>
         {% else %}
           <tr>
-            <td colspan="6" class="text-center text-muted py-4">No logs yet</td>
+            <td colspan="6" class="text-center text-muted py-5">📭 No logs yet</td>
           </tr>
         {% endfor %}
       </tbody>

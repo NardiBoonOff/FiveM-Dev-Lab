@@ -4,8 +4,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const action = button.dataset.serverAction;
       const serverId = button.dataset.serverId;
       const originalText = button.textContent;
+      const originalClass = button.className;
+      
       button.disabled = true;
-      button.textContent = '...';
+      button.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
 
       try {
         const response = await fetch(`/api/server/${serverId}/${action}`, {
@@ -14,16 +16,49 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         const payload = await response.json();
         if (payload.status === 'ok') {
-          window.location.reload();
+          setTimeout(() => {
+            window.location.reload();
+          }, 500);
         } else {
-          alert(payload.message || 'Action failed');
+          showAlert(payload.message || 'Action failed', 'danger');
         }
       } catch (error) {
-        alert('Request failed');
+        showAlert('Request failed: ' + error.message, 'danger');
       } finally {
         button.disabled = false;
         button.textContent = originalText;
+        button.className = originalClass;
       }
     });
   });
+
+  // Auto-refresh monitoring data every 5 seconds
+  const monitoringElements = document.querySelectorAll('[data-monitor]');
+  if (monitoringElements.length > 0) {
+    setInterval(refreshMonitoring, 5000);
+  }
 });
+
+function showAlert(message, type = 'info') {
+  const alertDiv = document.createElement('div');
+  alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+  alertDiv.role = 'alert';
+  alertDiv.innerHTML = `
+    ${message}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  `;
+  const container = document.querySelector('.container-fluid');
+  container.insertBefore(alertDiv, container.firstChild);
+  
+  setTimeout(() => {
+    alertDiv.remove();
+  }, 5000);
+}
+
+function refreshMonitoring() {
+  const elements = document.querySelectorAll('[data-monitor]');
+  elements.forEach(el => {
+    const serverId = el.dataset.monitor;
+    // Add live monitoring refresh here if needed
+  });
+}

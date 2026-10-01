@@ -5,36 +5,41 @@
 {% block content %}
 <div class="page-header d-flex justify-content-between align-items-center">
   <div>
-    <h2>💾 Backups</h2>
-    <p class="text-muted mb-0">Snapshots and server backups</p>
+    <h2>💾 Backups & Snapshots</h2>
+    <p class="text-muted mb-0">Server backups and recovery points</p>
   </div>
   <form method="post" action="{{ url_for('create_backup') }}" style="margin: 0;">
-    <button class="btn btn-primary" type="submit">✅ Create backup</button>
+    <button class="btn btn-primary" type="submit">➕ Create Backup</button>
   </form>
 </div>
 
-<div class="card p-3">
+<div class="card p-0">
   <div class="table-responsive">
-    <table class="table table-dark table-borderless mb-0">
+    <table class="table table-hover mb-0">
       <thead>
         <tr>
-          <th>Name</th>
-          <th>Size</th>
-          <th>Created</th>
-          <th>Type</th>
+          <th>📦 Backup Name</th>
+          <th>💾 Size</th>
+          <th>🕐 Created</th>
+          <th>🏷️ Type</th>
+          <th>⚙️ Actions</th>
         </tr>
       </thead>
       <tbody>
         {% for backup in backups %}
           <tr>
-            <td>{{ backup.name }}</td>
-            <td>{{ (backup.size / 1024 / 1024) | round(2) }} MB</td>
+            <td><code>{{ backup.name }}</code></td>
+            <td><strong>{{ (backup.size / 1024 / 1024) | round(2) }} MB</strong></td>
             <td>{{ backup.modified }}</td>
             <td><span class="badge bg-secondary">{{ backup.type }}</span></td>
+            <td>
+              <button class="btn btn-sm btn-info">📥 Restore</button>
+              <button class="btn btn-sm btn-danger">🗑️ Delete</button>
+            </td>
           </tr>
         {% else %}
           <tr>
-            <td colspan="4" class="text-center text-muted py-4">No backups yet. Create one to get started.</td>
+            <td colspan="5" class="text-center text-muted py-5">📭 No backups yet. Create one to get started!</td>
           </tr>
         {% endfor %}
       </tbody>

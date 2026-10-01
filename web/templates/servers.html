@@ -5,24 +5,24 @@
 {% block content %}
 <div class="d-flex justify-content-between align-items-center page-header">
   <div>
-    <h2>Servers</h2>
-    <p class="text-muted mb-0">Create and manage your local FiveM environments</p>
+    <h2>🎮 Server Manager</h2>
+    <p class="text-muted mb-0">Create and manage your FiveM environments</p>
   </div>
 </div>
 
 <div class="card p-4 mb-4">
-  <h5 class="mb-3">Create New Server</h5>
+  <h5 class="mb-4">➕ Create New Server</h5>
   <form method="post">
     <div class="row g-3">
-      <div class="col-md-4">
-        <label class="form-label">Server name</label>
+      <div class="col-lg-3 col-md-6">
+        <label class="form-label">Server Name</label>
         <input class="form-control" name="name" placeholder="e.g., esx-ox-dev" required>
       </div>
-      <div class="col-md-4">
+      <div class="col-lg-3 col-md-6">
         <label class="form-label">Folder</label>
-        <input class="form-control" name="folder" placeholder="Auto-generated from name">
+        <input class="form-control" name="folder" placeholder="Auto-generated">
       </div>
-      <div class="col-md-4">
+      <div class="col-lg-2 col-md-6">
         <label class="form-label">Environment</label>
         <select class="form-select" name="environment">
           <option value="dev">Development</option>
@@ -31,7 +31,11 @@
           <option value="test">Test</option>
         </select>
       </div>
-      <div class="col-md-4">
+      <div class="col-lg-2 col-md-6">
+        <label class="form-label">Port</label>
+        <input class="form-control" type="number" name="port" value="30120" min="30000" max="30999">
+      </div>
+      <div class="col-lg-2 col-md-12">
         <label class="form-label">Template</label>
         <select class="form-select" name="template">
           <option value="esx-ox">ESX/OX</option>
@@ -39,61 +43,58 @@
           <option value="empty">Empty</option>
         </select>
       </div>
-      <div class="col-md-4">
-        <label class="form-label">Port</label>
-        <input class="form-control" type="number" name="port" value="30120" min="30000" max="30999">
-      </div>
-      <div class="col-md-4">
+      <div class="col-12">
         <label class="form-label">Notes</label>
-        <input class="form-control" name="notes" placeholder="Optional notes">
+        <input class="form-control" name="notes" placeholder="Optional: add notes about this server">
       </div>
       <div class="col-12">
-        <button class="btn btn-primary" type="submit">✅ Create server</button>
+        <button class="btn btn-primary" type="submit">✅ Create Server</button>
       </div>
     </div>
   </form>
 </div>
 
-<h5 class="mb-3">Your Servers</h5>
-<div class="card p-3">
+<h5 class="mb-3">📋 Your Servers</h5>
+<div class="card p-0">
   <div class="table-responsive">
-    <table class="table table-dark table-borderless mb-0">
+    <table class="table table-hover mb-0">
       <thead>
         <tr>
-          <th>Name</th>
-          <th>Environment</th>
-          <th>Template</th>
-          <th>Status</th>
-          <th>Port</th>
-          <th>Actions</th>
+          <th>🎮 Name</th>
+          <th>📍 Env</th>
+          <th>🏗️ Template</th>
+          <th>🔴 Status</th>
+          <th>🔌 Port</th>
+          <th>📝 Notes</th>
+          <th>⚙️ Actions</th>
         </tr>
       </thead>
       <tbody>
         {% for server in servers %}
         <tr>
           <td>
-            <a href="{{ url_for('server_detail', server_id=server.id) }}" class="text-light fw-bold">{{ server.name }}</a>
-            {% if server.notes %}<br><small class="text-muted">{{ server.notes }}</small>{% endif %}
+            <a href="{{ url_for('server_detail', server_id=server.id) }}" class="text-light fw-bold" style="text-decoration: none; color: var(--primary-light);">{{ server.name }}</a>
           </td>
           <td><span class="badge bg-secondary">{{ server.environment }}</span></td>
-          <td>{{ server.template }}</td>
+          <td><code>{{ server.template }}</code></td>
           <td>
             {% if server.status == 'running' %}
-              <span class="status-pill badge-running">🟢 Running</span>
+              <span class="status-pill badge-running">● Running</span>
             {% else %}
-              <span class="status-pill badge-stopped">⚫ Stopped</span>
+              <span class="status-pill badge-stopped">● Stopped</span>
             {% endif %}
           </td>
-          <td>{{ server.port }}</td>
+          <td><code>{{ server.port }}</code></td>
+          <td><small class="text-muted">{{ server.notes[:30] or '-' }}</small></td>
           <td class="action-bar">
-            <button class="btn btn-sm btn-success" data-server-action="start" data-server-id="{{ server.id }}">Start</button>
-            <button class="btn btn-sm btn-warning" data-server-action="stop" data-server-id="{{ server.id }}">Stop</button>
-            <a href="{{ url_for('server_detail', server_id=server.id) }}" class="btn btn-sm btn-info">Configure</a>
+            <a href="{{ url_for('server_detail', server_id=server.id) }}" class="btn btn-sm btn-info">⚙ Config</a>
+            <button class="btn btn-sm btn-success" data-server-action="start" data-server-id="{{ server.id }}">▶ Start</button>
+            <button class="btn btn-sm btn-warning" data-server-action="stop" data-server-id="{{ server.id }}">⏹ Stop</button>
           </td>
         </tr>
         {% else %}
         <tr>
-          <td colspan="6" class="text-center text-muted py-4">No servers yet. Create one using the form above.</td>
+          <td colspan="7" class="text-center text-muted py-5">📭 No servers yet. Create one using the form above!</td>
         </tr>
         {% endfor %}
       </tbody>
