@@ -1,20 +1,23 @@
 {% extends 'base.html' %}
+
+{% block title %}Logs - FiveM Dev Lab{% endblock %}
+
 {% block content %}
 <div class="page-header">
-  <h2>Activity Logs</h2>
-  <p class="text-muted mb-0">Operations and system events</p>
+  <h2>📋 Activity Logs</h2>
+  <p class="text-muted mb-0">All operations and system events</p>
 </div>
 
 <div class="card p-3">
   <div class="table-responsive">
-    <table class="table table-dark table-borderless mb-0">
+    <table class="table table-dark table-borderless mb-0 small">
       <thead>
         <tr>
-          <th>Time</th>
-          <th>Server</th>
-          <th>Action</th>
-          <th>Level</th>
-          <th>User</th>
+          <th style="width: 180px;">Time</th>
+          <th style="width: 120px;">Server</th>
+          <th style="width: 100px;">Action</th>
+          <th style="width: 60px;">Level</th>
+          <th style="width: 80px;">User</th>
           <th>Details</th>
         </tr>
       </thead>
@@ -22,11 +25,23 @@
         {% for entry in entries %}
           <tr>
             <td>{{ entry.created_at }}</td>
-            <td>{{ entry.server_name or 'system' }}</td>
+            <td>{{ entry.server_name or '—' }}</td>
             <td>{{ entry.action }}</td>
-            <td>{{ entry.level }}</td>
+            <td>
+              {% if entry.level == 'error' %}
+                <span class="badge bg-danger">error</span>
+              {% elif entry.level == 'warning' %}
+                <span class="badge bg-warning">warning</span>
+              {% else %}
+                <span class="badge bg-info">info</span>
+              {% endif %}
+            </td>
             <td>{{ entry.user }}</td>
-            <td>{{ entry.details or '-' }}</td>
+            <td class="text-muted">{{ entry.details or '—' }}</td>
+          </tr>
+        {% else %}
+          <tr>
+            <td colspan="6" class="text-center text-muted py-4">No logs yet</td>
           </tr>
         {% endfor %}
       </tbody>

@@ -1,12 +1,15 @@
 {% extends 'base.html' %}
+
+{% block title %}Backups - FiveM Dev Lab{% endblock %}
+
 {% block content %}
 <div class="page-header d-flex justify-content-between align-items-center">
   <div>
-    <h2>Backups</h2>
-    <p class="text-muted mb-0">Snapshots and local backups</p>
+    <h2>💾 Backups</h2>
+    <p class="text-muted mb-0">Snapshots and server backups</p>
   </div>
-  <form method="post" action="{{ url_for('create_backup') }}">
-    <button class="btn btn-primary" type="submit">Create backup</button>
+  <form method="post" action="{{ url_for('create_backup') }}" style="margin: 0;">
+    <button class="btn btn-primary" type="submit">✅ Create backup</button>
   </form>
 </div>
 
@@ -17,6 +20,7 @@
         <tr>
           <th>Name</th>
           <th>Size</th>
+          <th>Created</th>
           <th>Type</th>
         </tr>
       </thead>
@@ -24,8 +28,13 @@
         {% for backup in backups %}
           <tr>
             <td>{{ backup.name }}</td>
-            <td>{{ backup.size }} bytes</td>
-            <td>{{ backup.type }}</td>
+            <td>{{ (backup.size / 1024 / 1024) | round(2) }} MB</td>
+            <td>{{ backup.modified }}</td>
+            <td><span class="badge bg-secondary">{{ backup.type }}</span></td>
+          </tr>
+        {% else %}
+          <tr>
+            <td colspan="4" class="text-center text-muted py-4">No backups yet. Create one to get started.</td>
           </tr>
         {% endfor %}
       </tbody>

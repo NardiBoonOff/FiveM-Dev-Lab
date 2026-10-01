@@ -1,13 +1,16 @@
 {% extends 'base.html' %}
+
+{% block title %}404 - Not Found{% endblock %}
+
 {% block content %}
 <div class="d-flex justify-content-between align-items-center page-header">
   <div>
     <h2>404 - Not Found</h2>
-    <p class="text-muted mb-0">Page not found</p>
+    <p class="text-muted mb-0">The page you're looking for doesn't exist</p>
   </div>
 </div>
 <div class="card p-4 text-center">
-  <p>The page you're looking for doesn't exist.</p>
-  <a href="{{ url_for('dashboard') }}" class="btn btn-primary mt-2">Back to Dashboard</a>
+  <p class="mb-3">The page you requested could not be found.</p>
+  <a href="{{ url_for('dashboard') }}" class="btn btn-primary">Back to Dashboard</a>
 </div>
 {% endblock %}

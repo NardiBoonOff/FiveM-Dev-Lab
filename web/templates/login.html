@@ -1,53 +1,25 @@
 {% extends 'base.html' %}
-{% block content %}
-<div class="page-header">
-  <h2>Settings</h2>
-  <p class="text-muted mb-0">Branding, defaults and panel configuration</p>
-</div>
 
-<div class="card p-4">
-  <form method="post">
-    <div class="row g-3">
-      <div class="col-md-6">
-        <label class="form-label">App name</label>
-        <input class="form-control" name="app_name" value="{{ config.app_name }}">
+{% block title %}Login - FiveM Dev Lab{% endblock %}
+
+{% block content %}
+<div class="login-shell">
+  <div class="card login-card">
+    <h2 class="text-center mb-4">FiveM Dev Lab</h2>
+    <p class="text-center text-muted mb-4">Professional Server Manager</p>
+    <form method="post">
+      <div class="mb-3">
+        <label class="form-label">Username</label>
+        <input class="form-control" name="username" required autofocus>
       </div>
-      <div class="col-md-6">
-        <label class="form-label">Theme</label>
-        <select class="form-select" name="theme">
-          <option value="dark" {% if config.theme == 'dark' %}selected{% endif %}>Dark</option>
-          <option value="light" {% if config.theme == 'light' %}selected{% endif %}>Light</option>
-        </select>
+      <div class="mb-3">
+        <label class="form-label">Password</label>
+        <input class="form-control" type="password" name="password" required>
       </div>
-      <div class="col-md-6">
-        <label class="form-label">Primary color</label>
-        <input class="form-control" name="primary_color" value="{{ config.primary_color }}">
-      </div>
-      <div class="col-md-6">
-        <label class="form-label">Default environment</label>
-        <select class="form-select" name="default_environment">
-          <option value="dev" {% if config.default_environment == 'dev' %}selected{% endif %}>dev</option>
-          <option value="staging" {% if config.default_environment == 'staging' %}selected{% endif %}>staging</option>
-          <option value="prod" {% if config.default_environment == 'prod' %}selected{% endif %}>prod</option>
-          <option value="test" {% if config.default_environment == 'test' %}selected{% endif %}>test</option>
-        </select>
-      </div>
-      <div class="col-md-6">
-        <label class="form-label">Admin username</label>
-        <input class="form-control" name="default_admin_user" value="{{ config.default_admin_user }}">
-      </div>
-      <div class="col-md-6">
-        <label class="form-label">Admin password</label>
-        <input class="form-control" type="password" name="default_admin_password" placeholder="Leave blank to keep current password">
-      </div>
-      <div class="col-12">
-        <label class="form-label">Discord webhook</label>
-        <input class="form-control" name="webhook_url" value="{{ config.webhook_url }}">
-      </div>
-      <div class="col-12">
-        <button class="btn btn-primary" type="submit">Save settings</button>
-      </div>
-    </div>
-  </form>
+      <button class="btn btn-primary w-100" type="submit">Login</button>
+    </form>
+    <hr class="my-3">
+    <p class="text-center text-muted small">Default: admin / admin123</p>
+  </div>
 </div>
 {% endblock %}
