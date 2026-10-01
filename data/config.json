@@ -1,0 +1,13 @@
+{
+  "app_name": "FiveM Dev Lab",
+  "theme": "dark",
+  "primary_color": "#00d1b2",
+  "default_admin_user": "admin",
+  "default_admin_password": "admin123",
+  "fx_server_path": "engine/FXServer.exe",
+  "servers_root": "servers",
+  "templates_root": "templates",
+  "backups_root": "backups",
+  "webhook_url": "",
+  "default_environment": "dev"
+}

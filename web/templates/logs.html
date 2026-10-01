@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-header">
+  <h2>Activity Logs</h2>
+  <p class="text-muted mb-0">Operations and system events</p>
+</div>
+
+<div class="card p-3">
+  <div class="table-responsive">
+    <table class="table table-dark table-borderless mb-0">
+      <thead>
+        <tr>
+          <th>Time</th>
+          <th>Server</th>
+          <th>Action</th>
+          <th>Level</th>
+          <th>User</th>
+          <th>Details</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for entry in entries %}
+          <tr>
+            <td>{{ entry.created_at }}</td>
+            <td>{{ entry.server_name or 'system' }}</td>
+            <td>{{ entry.action }}</td>
+            <td>{{ entry.level }}</td>
+            <td>{{ entry.user }}</td>
+            <td>{{ entry.details or '-' }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

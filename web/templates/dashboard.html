@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center page-header">
+  <div>
+    <h2>Dashboard</h2>
+    <p class="text-muted mb-0">Global overview of your local FiveM environments</p>
+  </div>
+  <a href="{{ url_for('servers') }}" class="btn btn-primary">Add server</a>
+</div>
+
+<div class="row g-4 mb-4">
+  <div class="col-md-3">
+    <div class="card stat-box">
+      <div class="text-muted small">Total servers</div>
+      <div class="display-6 fw-bold mt-2">{{ total }}</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card stat-box">
+      <div class="text-muted small">Running</div>
+      <div class="display-6 fw-bold mt-2 text-success">{{ running }}</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card stat-box">
+      <div class="text-muted small">Stopped</div>
+      <div class="display-6 fw-bold mt-2 text-danger">{{ stopped }}</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card stat-box">
+      <div class="text-muted small">Templates</div>
+      <div class="display-6 fw-bold mt-2">3</div>
+    </div>
+  </div>
+</div>
+
+<div class="card p-3">
+  <div class="table-responsive">
+    <table class="table table-dark table-borderless align-middle mb-0">
+      <thead>
+        <tr>
+          <th>Server</th>
+          <th>Environment</th>
+          <th>Template</th>
+          <th>Status</th>
+          <th>CPU</th>
+          <th>RAM</th>
+          <th>Port</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for server in servers %}
+          <tr>
+            <td><a href="{{ url_for('server_detail', server_id=server.id) }}" class="text-light fw-bold">{{ server.name }}</a></td>
+            <td>{{ server.environment }}</td>
+            <td>{{ server.template }}</td>
+            <td>
+              {% if server.status == 'running' %}
+                <span class="status-pill badge-running">Running</span>
+              {% else %}
+                <span class="status-pill badge-stopped">Stopped</span>
+              {% endif %}
+            </td>
+            <td>{{ server.monitor.cpu_percent }}%</td>
+            <td>{{ server.monitor.memory_mb }} MB</td>
+            <td>{{ server.port }}</td>
+            <td class="action-bar">
+              <button class="btn btn-sm btn-success" data-server-action="start" data-server-id="{{ server.id }}">Start</button>
+              <button class="btn btn-sm btn-warning" data-server-action="stop" data-server-id="{{ server.id }}">Stop</button>
+              <button class="btn btn-sm btn-outline-light" data-server-action="restart" data-server-id="{{ server.id }}">Restart</button>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

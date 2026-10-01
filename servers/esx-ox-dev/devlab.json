@@ -1,0 +1,9 @@
+{
+  "name": "esx-ox-dev",
+  "environment": "dev",
+  "template": "esx-ox",
+  "port": 30120,
+  "rcon_port": 30121,
+  "mysql_database": "esx_ox_dev",
+  "notes": "Default ESX/OX development server"
+}
